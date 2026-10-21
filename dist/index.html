@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#040807" />
+    <meta name="description" content="VALVES // DEADLOCK — a first-person pressure-combat simulation." />
+    <title>VALVES // DEADLOCK</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050807'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23ff5a1f' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23ff5a1f'/%3E%3Cpath d='M32 4v16M32 44v16M4 32h16M44 32h16' stroke='%23d7f7ff' stroke-width='2'/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="/assets/index-UR-dvdL9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-xiQKW-Al.css">
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="scene" aria-label="Valves Deadlock game view"></canvas>
+
+      <div id="boot" class="boot">
+        <div class="boot-mark">
+          <span class="boot-ring"></span>
+          <span class="boot-ring ring-2"></span>
+        </div>
+        <div class="boot-copy">
+          <span>VALVE DYNAMICS</span>
+          <strong>INITIALIZING PRESSURE CORE</strong>
+          <div class="boot-bar"><i></i></div>
+          <small id="bootStatus">CALIBRATING VALVE ARRAY...</small>
+        </div>
+      </div>
+
+      <div id="menu" class="menu screen">
+        <div class="menu-vignette"></div>
+        <div class="menu-grain"></div>
+
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-glyph"><i></i><i></i><i></i></span>
+            <div><b>VALVE DYNAMICS</b><small>PRESSURE SYSTEMS DIVISION</small></div>
+          </div>
+          <div class="build">
+            <span>SIMULATION 07</span>
+            <span class="live-dot">LIVE</span>
+            <span>BUILD 0.9.4</span>
+          </div>
+        </header>
+
+        <section class="menu-main">
+          <div class="title-block">
+            <div class="eyebrow"><span class="eyebrow-line"></span>PRESSURE PROTOCOL <em>// 2086</em></div>
+            <h1 class="game-title" aria-label="Valves Deadlock">
+              <span class="title-valves">VALVES</span>
+              <span class="title-deadlock" data-text="DEADLOCK">DEADLOCK</span>
+            </h1>
+            <p class="tagline">The core is screaming. <b>Hold the line.</b></p>
+            <p class="brief">Hostile signatures have breached Sector 07. Vent the pressure valves.<br />Survive the deadlock. Do not let the reactor reach critical.</p>
+
+            <div class="menu-actions">
+              <button id="startBtn" class="btn-start" type="button">
+                <span class="btn-scan"></span>
+                <span class="btn-label">START</span>
+                <span class="btn-meta">ENTER THE REACTOR</span>
+              </button>
+              <button id="audioBtn" class="btn-audio" type="button" aria-label="Toggle audio">
+                <span class="audio-icon"><i></i><i></i><i></i></span>
+                <span id="audioLabel">AUDIO ON</span>
+              </button>
+            </div>
+
+            <div class="controls">
+              <div><kbd>WASD</kbd><span>MOVE</span></div>
+              <div><kbd>MOUSE</kbd><span>AIM / FIRE</span></div>
+              <div><kbd>SHIFT</kbd><span>SPRINT</span></div>
+              <div><kbd>E</kbd><span>VENT VALVE</span></div>
+              <div><kbd>R</kbd><span>RELOAD</span></div>
+              <div><kbd>SPACE</kbd><span>DASH</span></div>
+            </div>
+          </div>
+
+          <aside class="diagnostics">
+            <div class="diag-head"><span>REACTOR TELEMETRY</span><i>SEC-07</i></div>
+            <div class="core-gauge">
+              <div class="gauge-ring"></div>
+              <div class="gauge-ring ring-b"></div>
+              <div class="gauge-core">
+                <span class="gauge-label">CORE PRESSURE</span>
+                <strong id="menuPressure">63.2</strong>
+                <small>PSI</small>
+              </div>
+              <span class="gauge-tick t1"></span><span class="gauge-tick t2"></span>
+              <span class="gauge-tick t3"></span><span class="gauge-tick t4"></span>
+            </div>
+            <div class="diag-rows">
+              <div><span>CONTAINMENT</span><b class="warn" id="menuContainment">DEGRADED</b></div>
+              <div><span>HOSTILES</span><b class="danger" id="menuHostiles">03 ACTIVE</b></div>
+              <div><span>VALVE ARRAY</span><b id="menuValves">2 / 3 READY</b></div>
+              <div><span>OPERATOR</span><b>R. VANCE</b></div>
+            </div>
+            <div class="waveform" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="diag-footer"><span>UPLINK STABLE</span><span class="crosshair-mini"></span><span>18ms</span></div>
+          </aside>
+        </section>
+
+        <footer class="menu-footer">
+          <div class="ticker"><span>PRESSURE RISING</span><i></i><span>VENT CYCLE NOMINAL</span><i></i><span>ROGUE SIGNATURES DETECTED</span><i></i><span>AUTHORIZED PERSONNEL ONLY</span></div>
+          <div class="legal">VALVE DYNAMICS © 2086 &nbsp;·&nbsp; AN ORIGINAL THREE.JS COMBAT SIMULATION</div>
+        </footer>
+      </div>
+
+      <div id="hud" class="hud" aria-hidden="true">
+        <div class="hud-vignette"></div>
+        <div class="damage-flash" id="damageFlash"></div>
+
+        <header class="hud-top">
+          <div class="hud-brand">
+            <span class="brand-glyph small"><i></i><i></i><i></i></span>
+            <div><b>VALVES</b><small>// DEADLOCK</small></div>
+          </div>
+          <div class="mission">
+            <span class="mission-kicker">ACTIVE DIRECTIVE</span>
+            <strong id="objective">VENT THE PRESSURE VALVES</strong>
+            <span class="mission-sub" id="objectiveSub">STABILIZE THE CORE BEFORE CONTAINMENT FAILS</span>
+          </div>
+          <div class="wave-box">
+            <span>WAVE</span>
+            <strong id="waveNum">01</strong>
+            <small id="waveTimer">INITIATING</small>
+          </div>
+        </header>
+
+        <div class="radar-wrap">
+          <div class="radar-head"><span>PROXIMITY</span><i>LIVE</i></div>
+          <canvas id="radar" width="220" height="220"></canvas>
+          <div class="radar-ring"></div>
+          <div class="radar-coords">SECTOR 07 / GRID C-4</div>
+        </div>
+
+        <div class="pressure-panel">
+          <div class="p-label"><span>CORE PRESSURE</span><i id="pressureState">ELEVATED</i></div>
+          <div class="p-readout"><strong id="pressureNum">63.2</strong><span>PSI</span></div>
+          <div class="p-bar"><i id="pressureFill"></i><span class="p-seg"></span><span class="p-seg"></span><span class="p-seg"></span></div>
+          <div class="p-scale"><span>SAFE</span><span>WARN</span><span>CRIT</span></div>
+        </div>
+
+        <div class="score-box">
+          <span>SCORE</span>
+          <strong id="scoreNum">000000</strong>
+          <small>COMBAT RATING</small>
+        </div>
+
+        <div class="crosshair" id="crosshair">
+          <span class="ch ch-t"></span><span class="ch ch-b"></span><span class="ch ch-l"></span><span class="ch ch-r"></span>
+          <i class="ch-dot"></i>
+          <b class="hitmarker" id="hitmarker"></b>
+        </div>
+
+        <div class="interact" id="interact">
+          <div class="interact-key">E</div>
+          <div><strong>VENT VALVE</strong><span id="valveName">PRESSURE RELIEF / 01</span></div>
+          <div class="interact-ring"><i></i></div>
+        </div>
+
+        <div class="toast-feed" id="toastFeed"></div>
+
+        <div class="hud-bottom">
+          <div class="vitals">
+            <div class="vitals-head"><span>SUIT INTEGRITY</span><b id="healthNum">100</b></div>
+            <div class="health-bar"><i id="healthFill"></i><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="vitals-sub"><span id="healthState">NOMINAL</span><span>ARMOR: REACTIVE</span></div>
+          </div>
+
+          <div class="dash-meter">
+            <span>DASH</span>
+            <div><i id="dashFill"></i></div>
+            <small>SPACE</small>
+          </div>
+
+          <div class="weapon">
+            <div class="weapon-meta"><span>PURGE-9</span><small>PRESSURE LANCE</small></div>
+            <div class="ammo"><strong id="ammoNum">12</strong><span id="ammoReserve">/ ∞</span></div>
+            <div class="ammo-ticks" id="ammoTicks"></div>
+            <div class="reload" id="reloadBar"><i></i><span>VENTING CHARGE</span></div>
+            <div class="weapon-hint"><span id="fireHint">LMB FIRE</span><span>R RELOAD</span></div>
+          </div>
+        </div>
+
+        <div class="valve-status" id="valveStatus">
+          <div class="valve-chip" data-valve="0"><i></i><span>V-01</span><b>READY</b></div>
+          <div class="valve-chip" data-valve="1"><i></i><span>V-02</span><b>READY</b></div>
+          <div class="valve-chip" data-valve="2"><i></i><span>V-03</span><b>READY</b></div>
+        </div>
+
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
+      </div>
+
+      <div id="pauseHint" class="pause-hint"><span>CLICK TO CAPTURE MOUSE</span><i>CLICK ANYWHERE</i></div>
+
+      <div id="endScreen" class="end-screen">
+        <div class="end-panel">
+          <span class="end-kicker" id="endKicker">CONTAINMENT FAILURE</span>
+          <h2 id="endTitle">CORE<br />BREACH</h2>
+          <p id="endCopy">The reactor exceeded critical pressure. Sector 07 is lost.</p>
+          <div class="end-stats">
+            <div><span>SCORE</span><b id="endScore">0</b></div>
+            <div><span>WAVE</span><b id="endWave">1</b></div>
+            <div><span>HOSTILES</span><b id="endKills">0</b></div>
+          </div>
+          <button id="restartBtn" class="btn-start" type="button"><span class="btn-label">RESTART</span><span class="btn-meta">RE-ENTER THE REACTOR</span></button>
+        </div>
+      </div>
+
+      <div id="rotateNotice" class="rotate-notice"><span>DESKTOP SIMULATION</span><p>Rotate your device for the full pressure-combat experience.</p></div>
+    </main>
+  </body>
+</html>
